@@ -11,11 +11,6 @@
 |------------------|----------------------------------|
 | GPU              | NVIDIA H200 × 8枚                |
 | NVIDIA Driver    | 570 以降                         |
-| CUDA             | 12.4                             |
-| Docker Image     | CUDA 12.4 / torch 2.6 対応環境   |
-| Python           | 3.11                             |
-| PyTorch          | 2.6.0                            |
-| MS-Swift         | 3.3.0.post1                      |
 
 ※ bfloat16はH200で正式サポートされています。
 
