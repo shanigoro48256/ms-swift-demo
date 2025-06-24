@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# from_hf_to_mcore.sh
+
+MODEL_ID="Qwen/Qwen3-8B-Base"
+
+BASE_NAME="$(basename "${MODEL_ID}")"
+OUT_DIR="${BASE_NAME}-mcore"
+
+CUDA_VISIBLE_DEVICES=0 \
+swift export \
+  --model "${MODEL_ID}" \
+  --to_mcore true \
+  --torch_dtype bfloat16 \
+  --output_dir "${OUT_DIR}"
+

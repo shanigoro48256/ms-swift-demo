@@ -1,0 +1,11 @@
+checkpoint_path=./checkpoints/qwen3-8b-base-mcore-20250614-2254/v0-20250614-225451
+
+converted_model_path=./converted_model/qwen3-8b-base-mcore-20250614-2254
+
+CUDA_VISIBLE_DEVICES=0 \
+swift export \
+  --mcore_model "$checkpoint_path" \
+  --output_dir "$converted_model_path" \
+  --to_hf true \
+  --torch_dtype bfloat16
+

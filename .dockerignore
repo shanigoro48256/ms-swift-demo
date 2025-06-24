@@ -1,0 +1,30 @@
+.git
+.env
+__pycache__/
+.ipynb_checkpoints/
+*.pt
+*.ckpt
+*.bin
+*.distcp
+
+#  ビルド生成物
+dist/
+build/
+*.egg-info/
+
+#  モデルや重いファイル
+*.safetensors
+*.onnx
+*.pth
+
+#  アーカイブ・データセット
+*.tar
+*.zip
+*.csv
+*.jsonl
+*.parquet
+
+#  今回 push しないフォルダ
+ms-swift-demo/
+swift/
+
