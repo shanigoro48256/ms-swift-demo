@@ -1,7 +1,7 @@
 # ms-swift-demo
 
 このプロジェクトは、[MS-Swift](https://github.com/modelscope/swift) を使用して、Qwen3-8Bモデルに対する継続事前学習（Continued Pretraining）を実施するデモです。  
-モデル形式の変換（Hugging Face形式⇄mcore形式）、学習、および推論まで一連の流れをサポートします。
+モデル形式の変換（Hugging Face形式⇔mcore形式）、学習、および推論まで一連の流れをサポートします。
 
 ---
 
@@ -33,6 +33,34 @@ docker build -t ms-swift-env .
 
 ---
 
+### 環境変数の設定（任意）
+
+```bash
+vim ~/.bashrc
+```
+
+```bash
+export HOST_WORKSPACE=/data/workspace
+export CONTAINER_NAME=ms_swift_container
+export HOST_MODEL_ROOT=/data/huggingface_cache
+export HUGGINGFACE_TOKEN="HuggingFaceのAPIキーが入ります。"
+export WANDB_API_KEY="WANDBのAPIキーが入ります。"
+```
+
+```bash
+source ~/.bashrc
+```
+
+作業スペースディレクトリを作成
+```bash
+mkdir -p "$HOST_WORKSPACE"
+sudo chmod -R 777 $HOST_WORKSPACE
+
+sudo mkdir -p /data/huggingface_cache
+sudo chmod -R 777 $HOST_MODEL_ROOT
+```
+
+---
 ### コンテナの起動
 
 ```bash
@@ -52,20 +80,67 @@ docker run --name $CONTAINER_NAME \
 
 ```bash
 docker exec -u root -it $CONTAINER_NAME /bin/bash
-cd /home/developer/workspace/ms-swift
+cd workspace/ms-swift-demo/ms-swift/
 ```
 
 ---
 
-### 5. データセットの前処理
+### データセットの前処理
+以下の医療系データセットを使用します。
+[kunishou/ApolloCorpus-ja](https://huggingface.co/datasets/kunishou/ApolloCorpus-ja)
+```bash
+vim create_dataset_apollo.py
+```
+```bash
+def create_cpt_jsonl(
+    dataset_name: str = "kunishou/ApolloCorpus-ja",
+    output_dir: str = "data",
+    output_filename: str = "apollo_cpt.jsonl",
+    text_column: str = "response_ja",
+):
 
+    try:
+        # 出力ディレクトリを確保
+        os.makedirs(output_dir, exist_ok=True)
+        output_path = os.path.join(output_dir, output_filename)
+
+        print(f"データセット '{dataset_name}' をロード中...")
+        ds = load_dataset(dataset_name, split="train")
+        print(f"ロード完了。総エントリ数: {len(ds)}")
+
+        written = 0
+        with open(output_path, "w", encoding="utf-8") as f_out:
+            for i, row in enumerate(ds):
+                text = row.get(text_column, "")
+                if not text or not text.strip():
+                    continue
+
+                formatted = {
+                    "messages": [
+                        {"role": "assistant", "content": text.strip()}
+                    ]
+                }
+                f_out.write(json.dumps(formatted, ensure_ascii=False) + "\n")
+                written += 1
+
+            print(f"{written} 件を書き出しました → {output_path}")
+
+    except Exception as e:
+        print(f"エラー: {e}")
+
+
+if __name__ == "__main__":
+    create_cpt_jsonl()
+```
+
+実行
 ```bash
 python create_dataset_apollo.py
 ```
 
 ---
 
-### モデル変換：Hugging Face → mcore
+### モデルのダウンロードおよび形式変換：Hugging Face → mcore
 
 ```bash
 vim from_hf_to_mcore
@@ -94,7 +169,7 @@ bash from_hf_to_mcore
 
 ---
 
-## 継続事前学習の実行
+### 継続事前学習の実行
 
 ```bash
 vim run_qwen3_8b_dense.sh
@@ -201,8 +276,6 @@ bash convert_mcore_to_hf
 ```bash
 python hf_inference_after.py
 ```
-
-> `exit` または `quit` で終了
 
 ---
 
