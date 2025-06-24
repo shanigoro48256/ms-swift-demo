@@ -247,7 +247,7 @@ bash run_qwen3_8b_dense.sh 2>&1 | tee run_qwen3_8b_dense.log
 vim convert_mcore_to_hf
 ```
 
-内容例：
+学習で保存されたチェックポイントのパスと出力先を入力
 
 ```bash
 checkpoint_path=./checkpoints/qwen3-8b-base-mcore-20250614-2254/v0-20250614-225451
