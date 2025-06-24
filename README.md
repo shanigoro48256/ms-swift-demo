@@ -1,6 +1,6 @@
 # ms-swift-demo
 
-このプロジェクトは、[MS-Swift](https://github.com/modelscope/swift) を使用して、Qwen3-8Bモデルに対する**継続事前学習（Continued Pretraining）**を実施するデモです。  
+このプロジェクトは、[MS-Swift](https://github.com/modelscope/swift) を使用して、Qwen3-8Bモデルに対する継続事前学習（Continued Pretraining）を実施するデモです。  
 モデル形式の変換（Hugging Face形式⇄mcore形式）、学習、および推論まで一連の流れをサポートします。
 
 ---
