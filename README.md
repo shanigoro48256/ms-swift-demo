@@ -169,6 +169,8 @@ bash from_hf_to_mcore
 
 ### 継続事前学習の実行
 
+モデルや学習パラメータを指定します。
+
 ```bash
 vim run_qwen3_8b_dense.sh
 ```
